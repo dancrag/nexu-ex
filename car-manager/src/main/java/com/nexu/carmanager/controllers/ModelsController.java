@@ -25,7 +25,6 @@ public class ModelsController {
     public String getHello() {
         return new String("Hello World!!");
     }
-    
 
     @PutMapping("/models/{id}")
     public Model putMethodName(@PathVariable String id, @RequestBody String entity) {
@@ -34,7 +33,12 @@ public class ModelsController {
 
     @GetMapping("/models")
     @ResponseBody
-    public List<Model> getModelsByParams(@RequestParam(required = false) int greater, @RequestParam(required = false) int lower){
+    public List<Model> getModelsByParams(@RequestParam(required = false) Integer greater, @RequestParam(required = false) Integer lower){
+        
+        if(greater.equals(null)) {
+            
+        }
+
         return modelsService.getModelsByParams();
     }
 }
