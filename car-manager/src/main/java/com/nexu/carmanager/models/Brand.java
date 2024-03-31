@@ -30,5 +30,7 @@ public class Brand {
     @JoinColumn(name = "brand_id")
     private List<Model> model;
 
+    private Double average_price;
+
     public Brand(){}
 }

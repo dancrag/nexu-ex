@@ -16,6 +16,7 @@ public class BrandsService {
 
     public List<Brand> getBrands(){
         List<Brand> brandsFound = brandsRespository.findAll();
+        brandsFound.stream().flatMap(brand -> brand.getModel());
         return brandsFound;
     }
 }
