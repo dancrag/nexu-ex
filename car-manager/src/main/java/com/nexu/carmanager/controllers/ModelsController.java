@@ -2,10 +2,8 @@ package com.nexu.carmanager.controllers;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nexu.carmanager.models.Model;
@@ -18,12 +16,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 @RestController
 public class ModelsController {
 
-    @Autowired
     ModelsService modelsService;
+
+    public ModelsController(ModelsService modelsService) {
+        this.modelsService = modelsService;
+    }
 
     @GetMapping("/")
     public String getHello() {
-        return new String("Hello World!!");
+        return "Hello Nexu!";
     }
 
     @PutMapping("/models/{id}")
@@ -32,11 +33,14 @@ public class ModelsController {
     }
 
     @GetMapping("/models")
-    @ResponseBody
     public List<Model> getModelsByParams(@RequestParam(required = false) Integer greater, @RequestParam(required = false) Integer lower){
         
-        if(greater.equals(null)) {
-            
+        if(greater != null) {
+            return modelsService.getModelsByParams(greater, true);
+        }
+
+        if(lower != null) {
+            return modelsService.getModelsByParams(lower, false);
         }
 
         return modelsService.getModelsByParams();

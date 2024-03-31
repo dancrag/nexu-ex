@@ -9,8 +9,10 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -18,6 +20,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @AllArgsConstructor
+@NoArgsConstructor
 public class Brand {
 
     @Id
@@ -30,7 +33,6 @@ public class Brand {
     @JoinColumn(name = "brand_id")
     private List<Model> model;
 
-    private Double average_price;
-
-    public Brand(){}
+    @Transient
+    private Double averagePrice;
 }

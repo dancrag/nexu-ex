@@ -1,5 +1,6 @@
 package com.nexu.carmanager.models;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
@@ -7,6 +8,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
@@ -14,6 +16,7 @@ import lombok.Setter;
 @Setter
 @Table(name="model")
 @AllArgsConstructor
+@NoArgsConstructor
 public class Model {
 
     @Id
@@ -22,7 +25,6 @@ public class Model {
 
     private String name;
 
-    private double average_price;
-
-    public Model(){}
+    @Column(name = "average_price")
+    private double averagePrice;
 }
