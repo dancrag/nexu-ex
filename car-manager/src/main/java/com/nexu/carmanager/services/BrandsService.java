@@ -11,6 +11,8 @@ import com.nexu.carmanager.models.Brand;
 import com.nexu.carmanager.models.Model;
 import com.nexu.carmanager.repositories.BrandsRespository;
 
+import lombok.NonNull;
+
 @Service
 public class BrandsService {
 
@@ -20,9 +22,20 @@ public class BrandsService {
         this.brandsRespository = brandsRespository;
     }
 
-    public List<Brand> getBrands(){
+    public ResponseEntity<List<Brand>> getBrands(){
         List<Brand> brandsFound = brandsRespository.findAll();
-        return brandsFound;
+
+        brandsFound.stream().forEach(brand -> {
+
+            Optional<Double> totalAveragePrice = brand.getModel().stream().map(Model::getAveragePrice).reduce((acc, i) -> acc + i);
+            Double brandAveragePrice = totalAveragePrice.get() / brand.getModel().stream().count();
+
+            if(totalAveragePrice.isPresent()) {
+                brand.setAveragePrice(brandAveragePrice);
+            }
+        });
+        
+        return new ResponseEntity<>(brandsFound, HttpStatus.ACCEPTED);
     }
 
     public ResponseEntity<List<Model>> getModelsByBrand(String id) {
@@ -33,5 +46,11 @@ public class BrandsService {
         }
 
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
+    }
+
+    public ResponseEntity<Brand> addNewBrand(@NonNull Brand newBrand) {
+        Brand savedBrand = brandsRespository.save(newBrand);
+
+        return new ResponseEntity<>(savedBrand, HttpStatus.ACCEPTED);
     }
 }
