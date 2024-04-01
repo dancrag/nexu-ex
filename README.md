@@ -71,3 +71,26 @@ response 200 ok
 ~~~
 { "id": 2, "name": "BMW", "models": null, "average_price": null }
 ~~~
+
+4. Add new model to a brand
+~~~
+METHOD: POST
+/brands/:id/models
+~~~
+
+request 200 ok
+~~~
+{
+    "name": "M8",
+    "averagePrice": 400000
+}
+~~~
+
+response 200 ok
+~~~
+{
+    "id": 8,
+    "name": "M8",
+    "averagePrice": 400000.0
+}
+~~~
