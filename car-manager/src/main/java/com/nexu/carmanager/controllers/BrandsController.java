@@ -1,20 +1,18 @@
 package com.nexu.carmanager.controllers;
 
-import java.util.ArrayList;
 import java.util.List;
 
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.nexu.carmanager.models.Brand;
 import com.nexu.carmanager.models.Model;
 import com.nexu.carmanager.services.BrandsService;
+import com.nexu.carmanager.services.ModelsService;
 
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,8 +22,11 @@ public class BrandsController {
 
     BrandsService brandsService;
 
-    public BrandsController(BrandsService brandsService) {
+    ModelsService modelsService;
+
+    public BrandsController(BrandsService brandsService, ModelsService modelsService) {
         this.brandsService = brandsService;
+        this.modelsService = modelsService;
     }
 
     /**
@@ -56,9 +57,9 @@ public class BrandsController {
     }
 
     @PostMapping("/brands/{id}/models")
-    public Brand addNewModelToBrand(@PathVariable String id, @RequestBody Model newModel) {
+    public ResponseEntity<Model> addNewModelToBrand(@PathVariable String id, @RequestBody Model newModel) {
         log.info("op = add new model to a brand, id = {}, new model = {}", id, newModel);
-        return null;
+        return modelsService.addModelInBrand(id, newModel);
     }
 
 }

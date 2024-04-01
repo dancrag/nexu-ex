@@ -2,6 +2,8 @@ package com.nexu.carmanager.models;
 
 import java.util.List;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,8 +37,8 @@ public class Brand {
     @Column(unique = true)
     private String name;
 
-    @OneToMany
-    @JoinColumn(name = "brand_id")
+    @OneToMany(mappedBy = "brand")
+    @JsonIgnore
     private List<Model> model;
 
     @Transient
