@@ -1,9 +1,10 @@
 package com.nexu.carmanager.services;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -11,14 +12,21 @@ import org.springframework.stereotype.Service;
 import com.nexu.carmanager.models.Brand;
 import com.nexu.carmanager.models.Model;
 import com.nexu.carmanager.repositories.BrandsRespository;
+import com.nexu.carmanager.repositories.ModelsRepository;
+
+import lombok.extern.slf4j.Slf4j;
 
 @Service
+@Slf4j
 public class BrandsService {
 
     BrandsRespository brandsRespository;
 
-    public BrandsService(BrandsRespository brandsRespository) {
+    ModelsRepository modelsRepository;
+
+    public BrandsService(BrandsRespository brandsRespository, ModelsRepository modelsRepository) {
         this.brandsRespository = brandsRespository;
+        this.modelsRepository = modelsRepository;
     }
 
     public ResponseEntity<List<Brand>> getBrands(){
@@ -37,7 +45,7 @@ public class BrandsService {
         return new ResponseEntity<>(brandsFound, HttpStatus.ACCEPTED);
     }
 
-    public ResponseEntity<List<Model>> getModelsByBrand(String id) {
+    public ResponseEntity<Set<Model>> getModelsByBrand(String id) {
         Optional<Brand> brandFound = brandsRespository.findById(Long.parseLong(id));
 
         if(brandFound.isPresent()) {
@@ -48,9 +56,32 @@ public class BrandsService {
     }
 
     public ResponseEntity<Brand> addNewBrand(Brand newBrand) {
-        newBrand.setModel(new ArrayList<>());
-        Brand savedBrand = brandsRespository.save(newBrand);
 
-        return new ResponseEntity<>(savedBrand, HttpStatus.ACCEPTED);
+        try {
+            Brand savedBrand = brandsRespository.save(newBrand);
+            
+            return new ResponseEntity<>(savedBrand, HttpStatus.ACCEPTED);
+        } catch(IllegalStateException ex) {
+            log.error("Entity can't save, cause = {}, message = {},", ex.getCause(), ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        } catch(DataIntegrityViolationException ex) {
+            log.error("SQL Error, cause = {}, message = {},", ex.getCause(), ex.getMessage());
+            return new ResponseEntity<>(HttpStatus.UNPROCESSABLE_ENTITY);
+        }
+    }
+
+    public ResponseEntity<Model> addModelInBrand(String id, Model newModel) { 
+        Optional<Brand> brandFound = brandsRespository.findById(Long.parseLong(id));
+
+        if(brandFound.isPresent()) {
+            newModel.setBrand(brandFound.get());
+            Model modelSaved = modelsRepository.save(newModel);
+            
+            log.info("op = addModelInBrand, saved model = {}", modelSaved);
+            
+            return new ResponseEntity<>(modelSaved, HttpStatus.ACCEPTED);
+        }
+
+        return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 }

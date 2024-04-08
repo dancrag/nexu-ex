@@ -1,6 +1,7 @@
 package com.nexu.carmanager.controllers;
 
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -14,10 +15,7 @@ import com.nexu.carmanager.models.Model;
 import com.nexu.carmanager.services.BrandsService;
 import com.nexu.carmanager.services.ModelsService;
 
-import lombok.extern.slf4j.Slf4j;
-
 @RestController
-@Slf4j
 public class BrandsController {
 
     BrandsService brandsService;
@@ -35,7 +33,6 @@ public class BrandsController {
      */
     @GetMapping("/brands")
     public ResponseEntity<List<Brand>> getBrands() {
-        log.info("op = get brands");
         return brandsService.getBrands();
     }
 
@@ -45,21 +42,18 @@ public class BrandsController {
      * @return a list of models for the specific brand
      */
     @GetMapping("/brands/{id}/models")
-    public ResponseEntity<List<Model>> getModelsByBrand(@PathVariable String id) {
-        log.info("op = get models by brand, id = {}", id);
+    public ResponseEntity<Set<Model>> getModelsByBrand(@PathVariable String id) {
         return brandsService.getModelsByBrand(id);
     }
 
     @PostMapping(value = "/brands")
     public ResponseEntity<Brand> addNewBrand(@RequestBody Brand newBrand) {
-        log.info("op = add new brand, entity = {}", newBrand);
         return brandsService.addNewBrand(newBrand);
     }
 
     @PostMapping("/brands/{id}/models")
     public ResponseEntity<Model> addNewModelToBrand(@PathVariable String id, @RequestBody Model newModel) {
-        log.info("op = add new model to a brand, id = {}, new model = {}", id, newModel);
-        return modelsService.addModelInBrand(id, newModel);
+        return brandsService.addModelInBrand(id, newModel);
     }
 
 }
