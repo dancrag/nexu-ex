@@ -2,6 +2,7 @@ package com.nexu.carmanager.controllers;
 
 import java.util.List;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -27,13 +28,8 @@ public class ModelsController {
         return "Hello Nexu!";
     }
 
-    @PutMapping("/models/{id}")
-    public Model putMethodName(@PathVariable String id, @RequestBody String entity) {
-        return null;
-    }
-
     @GetMapping("/models")
-    public List<Model> getModelsByParams(@RequestParam(required = false) Integer greater, @RequestParam(required = false) Integer lower){
+    public ResponseEntity<List<Model>> getModelsByParams(@RequestParam(required = false) Integer greater, @RequestParam(required = false) Integer lower){
         
         if(greater != null) {
             return modelsService.getModelsByParams(greater, true);
@@ -44,5 +40,10 @@ public class ModelsController {
         }
 
         return modelsService.getModelsByParams();
+    }
+
+    @PutMapping("/models/{id}")
+    public ResponseEntity<Model> editModelAveragePrice(@PathVariable String id, @RequestBody Model model) {
+        return modelsService.editModelAveragePrice(id, model);
     }
 }

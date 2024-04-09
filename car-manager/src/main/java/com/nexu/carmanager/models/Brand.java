@@ -15,7 +15,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import lombok.ToString;
 
 @Entity
 @Table(name = "brand")
@@ -23,7 +22,6 @@ import lombok.ToString;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-@ToString(includeFieldNames = true)
 public class Brand {
 
     @Id
@@ -38,4 +36,9 @@ public class Brand {
 
     @Transient
     private Double averagePrice;
+
+    @Override
+    public String toString() {
+        return "(name: " + getName() + ")";
+    }
 }

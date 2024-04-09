@@ -31,6 +31,7 @@ public class BrandsService {
     }
 
     public ResponseEntity<List<Brand>> getBrands(){
+        log.info("op = getBrands");
         List<Brand> brandsFound = brandsRespository.findAll();
 
         brandsFound.stream().forEach(brand -> {
@@ -47,6 +48,7 @@ public class BrandsService {
     }
 
     public ResponseEntity<Set<Model>> getModelsByBrand(String id) {
+        log.info("op = getModelsByBrand, id = {}", id);
         Optional<Brand> brandFound = brandsRespository.findById(Long.parseLong(id));
 
         if(brandFound.isPresent()) {
@@ -57,6 +59,7 @@ public class BrandsService {
     }
 
     public ResponseEntity<Brand> addNewBrand(@NonNull Brand newBrand) {
+        log.info("op = addNewBrand, brand = {}", newBrand);
 
         try {
             Brand savedBrand = brandsRespository.save(newBrand);
@@ -72,6 +75,7 @@ public class BrandsService {
     }
 
     public ResponseEntity<Model> addModelInBrand(String id, Model newModel) {
+        log.info("op = addModelInBrand, id = {}, model = {}", id, newModel);
 
         Optional<Brand> brandFound = brandsRespository.findById(Long.parseLong(id));
 
@@ -83,8 +87,6 @@ public class BrandsService {
 
             newModel.setBrand(brandFound.get());
             Model modelSaved = modelsRepository.save(newModel);
-            
-            log.info("op = addModelInBrand, saved model = {}", modelSaved);
             
             return new ResponseEntity<>(modelSaved, HttpStatus.ACCEPTED);
         }
