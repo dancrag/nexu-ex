@@ -15,12 +15,12 @@ Be sure you have the required software
 cd car-manager
 ~~~
 
-2. First install with maven
+2. First, install the application using maven
 ~~~
 mvn clean install
 ~~~
 
-3. Run the application with spring boot
+3. Finally, run the application with spring boot
 ~~~
 mvn spring-boot:run
 ~~~
@@ -93,4 +93,52 @@ response 200 ok
     "name": "M8",
     "averagePrice": 400000.0
 }
+~~~
+
+5. Update average price of model
+~~~
+METHOD: PUT
+/models/{id}
+~~~
+
+**Note: average price value must be greater than 100,000**
+
+request 200 ok
+~~~
+{
+    "averagePrice": 450000
+}
+~~~
+
+response 200 ok 
+~~~
+{
+    "id": 8,
+    "name": "Civic",
+    "averagePrice": 450000.0
+}
+~~~
+
+6. Request for models with the opportunity of filter by average price
+~~~
+METHOD: GET
+/models?greater=&lower=
+~~~
+
+**Note: the params are optional**
+
+response 200 ok
+~~~
+[
+    {
+        "id": 1,
+        "name": "Civic",
+        "averagePrice": 150000.0
+    },
+    {
+        "id": 2,
+        "name": "Civic Coupé",
+        "averagePrice": 150000.0
+    }
+]
 ~~~
