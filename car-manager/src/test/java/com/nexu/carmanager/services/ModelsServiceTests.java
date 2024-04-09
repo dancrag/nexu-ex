@@ -21,6 +21,7 @@ import com.nexu.carmanager.repositories.ModelsRepository;
 
 import jakarta.persistence.EntityManager;
 import jakarta.persistence.EntityManagerFactory;
+import jakarta.persistence.EntityTransaction;
 
 @ExtendWith(MockitoExtension.class)
 class ModelsServiceTests {
@@ -33,17 +34,25 @@ class ModelsServiceTests {
 
     private List<Model> models = new ArrayList<>();
 
-    private Model model;
-
     @Mock
     private EntityManagerFactory emf;
 
+    @Mock
     private EntityManager em;
+
+    @Mock
+    private EntityTransaction et;
+
+    private Model civic;
+
+    private Model civicCoupe;
 
     @BeforeEach
     void init() {
-        model = new Model(Long.valueOf(1), "Civic", null, 1000000);
-        models.add(model);
+        civic = new Model(Long.valueOf(1), "Civic", null, 1000000);
+        civicCoupe = new Model(Long.valueOf(2), "Civic Coupé", null, 2000000);
+        models.add(civic);
+        models.add(civicCoupe);
     }
 
     @Test
@@ -61,8 +70,16 @@ class ModelsServiceTests {
 
     @Test
     void testEditModelAveragePriceWhenLessThan(){
-        model.setAveragePrice(99999);
-        Assertions.assertEquals(new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE), modelsService.editModelAveragePrice("1", model));
+        civic.setAveragePrice(99999);
+        Assertions.assertEquals(new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE), modelsService.editModelAveragePrice("1", civic));
     }
     
+    @Test
+    void testEditModelAveragePriceWhenMoreThan(){
+        civic.setAveragePrice(100000);
+        Mockito.when(emf.createEntityManager()).thenReturn(em);
+        Mockito.when(em.find(Model.class, "1")).thenReturn(civic);
+        Mockito.when(em.getTransaction()).thenReturn(et);
+        Assertions.assertEquals(new ResponseEntity<>(civic, HttpStatus.ACCEPTED), modelsService.editModelAveragePrice("1", civic));
+    }
 }

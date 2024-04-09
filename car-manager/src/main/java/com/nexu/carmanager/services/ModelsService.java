@@ -34,10 +34,7 @@ public class ModelsService {
         log.info("op = getModelsByParams");
 
         List<Model> models = modelsRepository.findAll().stream().filter(model -> {
-            if(isGreater) {
-                return model.getAveragePrice() > price;
-            }
-            return model.getAveragePrice() < price;
+            return isGreater ? model.getAveragePrice() > price : model.getAveragePrice() < price;
         }).toList();
 
         return new ResponseEntity<>(models, HttpStatus.ACCEPTED); 
