@@ -44,6 +44,10 @@ public class ModelsService {
     }
 
     public ResponseEntity<Model> editModelAveragePrice(String id, Model model) {
+
+        if(model.getAveragePrice() < 100000) {
+            return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+        }
         
         EntityManager em = emf.createEntityManager();
         em.getTransaction().begin();
@@ -56,7 +60,7 @@ public class ModelsService {
 
         log.info("op = editModelAveragePrice, id = {}, model = {}", id, model);
 
-        return null;
+        return new ResponseEntity<>(modelFound, HttpStatus.ACCEPTED);
     }
 
 }
