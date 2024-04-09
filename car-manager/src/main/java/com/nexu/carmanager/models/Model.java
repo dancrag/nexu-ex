@@ -32,7 +32,7 @@ public class Model {
     @Column(unique = true)
     private String name;
 
-    @ManyToOne(cascade = CascadeType.PERSIST)
+    @ManyToOne(cascade = CascadeType.ALL)
     @JsonIgnore
     private Brand brand;
 

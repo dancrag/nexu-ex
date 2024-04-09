@@ -14,6 +14,7 @@ import com.nexu.carmanager.models.Model;
 import com.nexu.carmanager.repositories.BrandsRespository;
 import com.nexu.carmanager.repositories.ModelsRepository;
 
+import lombok.NonNull;
 import lombok.extern.slf4j.Slf4j;
 
 @Service
@@ -55,7 +56,7 @@ public class BrandsService {
         return new ResponseEntity<>(HttpStatus.NOT_FOUND);
     }
 
-    public ResponseEntity<Brand> addNewBrand(Brand newBrand) {
+    public ResponseEntity<Brand> addNewBrand(@NonNull Brand newBrand) {
 
         try {
             Brand savedBrand = brandsRespository.save(newBrand);
@@ -70,10 +71,16 @@ public class BrandsService {
         }
     }
 
-    public ResponseEntity<Model> addModelInBrand(String id, Model newModel) { 
+    public ResponseEntity<Model> addModelInBrand(String id, Model newModel) {
+
         Optional<Brand> brandFound = brandsRespository.findById(Long.parseLong(id));
 
         if(brandFound.isPresent()) {
+
+            if(newModel.getAveragePrice() < 100000) {
+                return new ResponseEntity<>(HttpStatus.NOT_ACCEPTABLE);
+            }
+
             newModel.setBrand(brandFound.get());
             Model modelSaved = modelsRepository.save(newModel);
             
